@@ -1,0 +1,14 @@
+obj
+bin
+debug
+release
+Library/
+Temp/
+*.suo
+*.csproj.user
+*.DotSettings.user
+Assembly-CSharp.csproj
+UnityRnD.CSharp.csproj
+UnityRnD.sln
+UnityRnD.v12.suo
+/*.csproj
