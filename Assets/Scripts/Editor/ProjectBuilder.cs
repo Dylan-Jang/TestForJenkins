@@ -16,10 +16,6 @@ class ProjectBuilder
 	{
 		BuildOptions opt = BuildOptions.None;
 
-		//char sep = Path.DirectorySeparatorChar;
-		////string BUILD_TARGET_PATH = Path.GetFullPath(".") + sep + TARGET_DIR + string.Format("/AndroidBuild_{0}.apk", PlayerSettings.buildVersion);
-		//string BUILD_TARGET_PATH = Path.GetFullPath(",") + sep + TARGET_DIR + "Poker.apk";
-
 		char sep = Path.DirectorySeparatorChar;
 		string buildDirectory = Path.GetFullPath(".") + sep + TARGET_DIR;
 		Directory.CreateDirectory(buildDirectory);
@@ -27,9 +23,9 @@ class ProjectBuilder
 		string BUILD_TARGET_PATH = buildDirectory + "/android";
 		Directory.CreateDirectory(BUILD_TARGET_PATH);
 
-		BUILD_TARGET_PATH += "/Poker.apk";
-
-		GenericBuild(SCENES, BUILD_TARGET_PATH, BuildTarget.Android, opt);
+		var BUILD_TARGET_PATH_PLATFORM = BUILD_TARGET_PATH + "/Poker.apk";
+		GenericBuild(SCENES, BUILD_TARGET_PATH_PLATFORM, BuildTarget.Android, opt);
+		GenericBuildVersion(BUILD_TARGET_PATH, BuildTarget.Android);
 	}
 
 	[MenuItem("Custom/CI/Build iOS Debug")]
@@ -54,6 +50,7 @@ class ProjectBuilder
 		Directory.CreateDirectory(BUILD_TARGET_PATH);
 
 		GenericBuild(SCENES, BUILD_TARGET_PATH, BuildTarget.iOS, opt);
+		GenericBuildVersion(BUILD_TARGET_PATH, BuildTarget.iOS);
 	}
 
 	private static string[] FindEnabledEditorScenes()
@@ -76,6 +73,17 @@ class ProjectBuilder
 		{
 			throw new Exception("BuildPlayer failure: " + res);
 		}
+	}
+
+	private static void GenericBuildVersion(string targetPath, BuildTarget build_target)
+	{
+		// ex)
+		// /build/android/Poker_Version_Android.txt
+		// /build/ios/Poker_Version_iOS.txt
+
+		var versionFileFullPath = string.Format("{0}/Poker_Version_{1}.txt", targetPath, build_target);
+		var versionString = string.Format("{0}_{1:yyyyMMddHHmmss}_{2}", build_target, DateTime.Now, PlayerSettings.bundleVersion);
+		File.WriteAllText(versionFileFullPath, versionString);
 	}
 }
 //}
